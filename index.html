@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Inicio de la Aventura</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at center, #0f172a, #020617);
+    color: #e5e7eb;
+    overflow: hidden;
+}
+
+/* LOADER */
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #020617;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel';
+    font-size: 24px;
+    letter-spacing: 3px;
+    z-index: 999;
+    animation: fadeOut 2s ease forwards;
+    animation-delay: 2s;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+/* PARTICULAS */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* CONTENIDO */
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 420px;
+    margin: auto;
+    padding: 40px 20px;
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+}
+
+.subtitle {
+    color: #9ca3af;
+    margin-bottom: 20px;
+}
+
+.card {
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(8px);
+}
+
+/* BOTONES */
+button {
+    width: 100%;
+    margin: 6px 0;
+    padding: 12px;
+    border: 1px solid rgba(255,215,0,0.3);
+    background: rgba(255,215,0,0.05);
+    color: #facc15;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: rgba(255,215,0,0.2);
+    box-shadow: 0 0 12px rgba(255,215,0,0.5);
+}
+
+/* INPUT */
+input {
+    width: 90%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #020617;
+    border: 1px solid #334155;
+    color: white;
+}
+
+/* RESULT */
+img {
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 10px;
+    animation: fadeIn 1s ease;
+}
+
+.hidden { display: none; }
+.error { color: #ef4444; }
+.success { color: #22c55e; }
+
+/* LOGO */
+.logo {
+    width: 140px;
+    margin: 0 auto 20px auto;
+    display: block;
+    border-radius: 12px;
+    animation: floatLogo 3s ease-in-out infinite, glowLogo 4s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes glowLogo {
+    0% { filter: drop-shadow(0 0 10px rgba(255,215,0,0.2)); }
+    50% { filter: drop-shadow(0 0 25px rgba(255,215,0,0.6)); }
+    100% { filter: drop-shadow(0 0 10px rgba(255,215,0,0.2)); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader">INICIANDO EXPERIENCIA...</div>
+
+<canvas id="particles"></canvas>
+
+<div class="container">
+
+<div id="home" class="card">
+    <img src="https://i.imgur.com/Z2tU22q.png" class="logo">
+    <h1>BIENVENIDOS</h1>
+    <p class="subtitle">Selecciona tu nombre</p>
+
+    <button onclick="startAudio(); selectUser('javi')">JAVI</button>
+    <button onclick="startAudio(); selectUser('aless')">ALESS</button>
+    <button onclick="startAudio(); selectUser('jenni')">JENNI</button>
+    <button onclick="startAudio(); selectUser('patri')">PATRI</button>
+    <button onclick="startAudio(); selectUser('david')">DAVID</button>
+    <button onclick="startAudio(); selectUser('alba')">ALBA</button>
+    <button onclick="startAudio(); selectUser('ivan')">IVAN</button>
+    <button onclick="startAudio(); selectUser('maite')">MAITE</button>
+</div>
+
+<div id="quiz" class="card hidden">
+    <h1 id="titleUser"></h1>
+    <p id="question"></p>
+
+    <input type="text" id="answer" placeholder="Introduce la clave">
+
+    <button onclick="checkAnswer()">COMPROBAR</button>
+    <button onclick="goHome()">VOLVER</button>
+
+    <p id="error" class="error"></p>
+</div>
+
+<div id="result" class="card hidden">
+    <h1 class="success">ACCESO CONCEDIDO</h1>
+    <img id="userImage">
+    <button onclick="goHome()">VOLVER</button>
+</div>
+
+</div>
+
+<!-- SONIDOS CORRECTOS -->
+<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c4e0f5c6b.mp3"></audio>
+<audio id="successSound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3"></audio>
+<audio id="ambient" src="https://cdn.pixabay.com/download/audio/2022/11/03/audio_6b1a9e1e0d.mp3" loop></audio>
+
+<script>
+let currentUser = "";
+let audioStarted = false;
+
+const data = {
+    javi:{question:"¿Qué abre todas las puertas?",answer:"llave",image:"URL_JAVI"},
+    aless:{question:"¿Cómo se accede a otro mundo?",answer:"portal",image:"URL_ALESS"},
+    jenni:{question:"¿Qué sigue a la luz?",answer:"sombra",image:"URL_JENNI"},
+    patri:{question:"¿Dónde comienza todo?",answer:"origen",image:"URL_PATRI"},
+    david:{question:"¿Qué no se puede evitar?",answer:"destino",image:"URL_DAVID"},
+    alba:{question:"¿Qué ilumina el camino?",answer:"luz",image:"URL_ALBA"},
+    ivan:{question:"¿Qué estás a punto de empezar?",answer:"viaje",image:"URL_IVAN"},
+    maite:{question:"¿Qué cruzas para entrar?",answer:"umbral",image:"URL_MAITE"}
+};
+
+function playSound(){
+    const s = document.getElementById("clickSound");
+    s.pause();
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+}
+
+function playSuccess(){
+    const s = document.getElementById("successSound");
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+}
+
+function startAudio(){
+    if(audioStarted) return;
+
+    const ambient = document.getElementById("ambient");
+    ambient.volume = 0;
+    ambient.play().catch(()=>{});
+
+    let vol = 0;
+    const fade = setInterval(()=>{
+        if(vol < 0.2){
+            vol += 0.01;
+            ambient.volume = vol;
+        } else {
+            clearInterval(fade);
+        }
+    },200);
+
+    audioStarted = true;
+}
+
+function selectUser(user){
+    playSound();
+    currentUser = user;
+
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+
+    document.getElementById("titleUser").innerText = user.toUpperCase();
+    document.getElementById("question").innerText = data[user].question;
+    document.getElementById("error").innerText = "";
+}
+
+function checkAnswer(){
+    playSound();
+    let input = document.getElementById("answer").value.toLowerCase();
+
+    if(input === data[currentUser].answer){
+        playSuccess();
+        document.getElementById("quiz").classList.add("hidden");
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("userImage").src = data[currentUser].image;
+    } else {
+        document.getElementById("error").innerText = "Clave incorrecta";
+    }
+}
+
+function goHome(){
+    playSound();
+    document.getElementById("quiz").classList.add("hidden");
+    document.getElementById("result").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("answer").value="";
+}
+
+/* PARTICULAS */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<60;i++){
+    particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        r:Math.random()*2,
+        d:Math.random()*0.5
+    });
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="rgba(255,215,0,0.6)";
+    particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+        p.y += p.d;
+        if(p.y>canvas.height) p.y=0;
+    });
+    requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>
