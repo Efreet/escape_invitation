@@ -170,7 +170,7 @@ COMENZAR
 
 </div>
     
-<div id="loader">INICIANDO EXPERIENCIA...</div>
+<div id="loader" style="display:none;">INICIANDO EXPERIENCIA...</div>
 
 <canvas id="particles"></canvas>
 
@@ -220,6 +220,10 @@ COMENZAR
 
 function initExperience(){
 
+    // mostrar loader tras click real
+    const loader = document.getElementById("loader");
+    loader.style.display = "flex";
+
     const ambient = document.getElementById("ambient");
 
     ambient.volume = 0;
@@ -235,6 +239,7 @@ function initExperience(){
         }
     },200);
 
+    // quitar pantalla inicio
     document.getElementById("startScreen").style.display = "none";
 }
     
