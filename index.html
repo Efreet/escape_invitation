@@ -227,13 +227,13 @@ function initExperience(){
 
     const ambient = document.getElementById("ambient");
 
-    ambient.volume = 0;
+    ambient.volume = 0.7;
     ambient.play().then(() => {
 
         let vol = 0;
         const fade = setInterval(()=>{
-            if(vol < 0.2){
-                vol += 0.01;
+            if(vol < 0.7){
+                vol += 0.1;
                 ambient.volume = vol;
             } else {
                 clearInterval(fade);
@@ -296,6 +296,12 @@ function checkAnswer(){
 
     if(input === data[currentUser].answer){
         playSuccess();
+
+        // 🛑 parar música de fondo
+        const ambient = document.getElementById("ambient");
+        ambient.pause();
+        ambient.currentTime = 0;
+        
         document.getElementById("quiz").classList.add("hidden");
         document.getElementById("result").classList.remove("hidden");
         document.getElementById("userImage").src = data[currentUser].image;
