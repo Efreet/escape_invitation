@@ -206,29 +206,43 @@ text-align: center;
 <audio id="successSound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3"></audio>
 <audio id="ambient" src="https://cdn.pixabay.com/download/audio/2022/11/03/audio_6b1a9e1e0d.mp3" loop></audio>
 
+let audioCtx = null;
+
+function unlockAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+}
+    
 <script>
 
 function initExperience(){
 
+    // 🔑 desbloqueo REAL del audio
+    unlockAudio();
+
     const ambient = document.getElementById("ambient");
 
-    // forzar desbloqueo audio (truco clave)
-    const unlock = document.getElementById("clickSound");
-    unlock.play().catch(()=>{});
-
-    // ahora sí, ambiente
     ambient.volume = 0;
-    ambient.play().catch(()=>{});
+    ambient.play().then(() => {
 
-    let vol = 0;
-    const fade = setInterval(()=>{
-        if(vol < 0.2){
-            vol += 0.01;
-            ambient.volume = vol;
-        } else {
-            clearInterval(fade);
-        }
-    },200);
+        let vol = 0;
+        const fade = setInterval(()=>{
+            if(vol < 0.2){
+                vol += 0.01;
+                ambient.volume = vol;
+            } else {
+                clearInterval(fade);
+            }
+        },200);
+
+    }).catch(e => {
+        console.log("Audio bloqueado:", e);
+    });
 
     document.getElementById("startScreen").style.display = "none";
 }
@@ -248,6 +262,8 @@ const data = {
 };
 
 function playSound(){
+    unlockAudio();
+
     const s = document.getElementById("clickSound");
     s.pause();
     s.currentTime = 0;
@@ -255,6 +271,8 @@ function playSound(){
 }
 
 function playSuccess(){
+    unlockAudio();
+
     const s = document.getElementById("successSound");
     s.currentTime = 0;
     s.play().catch(()=>{});
