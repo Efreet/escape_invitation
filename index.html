@@ -185,6 +185,16 @@ img {
 
     z-index: 1000;
 }
+    
+/* PANTALLA FINAL */
+#finalScreen {
+    text-align: center;
+}
+    
+#finalScreen h1 {
+    color: #22c55e;
+    text-shadow: 0 0 20px rgba(34,197,94,0.7);
+}
 </style>
 </head>
 
@@ -244,6 +254,11 @@ img {
 
     <p id="finalError" class="error"></p>
     <p id="attemptsLeft"></p>
+</div>
+
+<div id="finalScreen" class="card hidden">
+    <h1>¡¡¡¡¡¡¡¡¡¡¡¡ACCESO DESBLOQUEADO!!!!!!!!!!!!</h1>
+    <p class="subtitle">¡Familia, vamos a divertirnos!</p>
 </div>
 
 </div>
@@ -315,13 +330,13 @@ let audioStarted = false;
 
 const data = {
     javi:{question:"¿Qué abre todas las puertas?",answer:"llave",image:"img/invitacion_Javi.png"},
-    aless:{question:"¿Cómo se accede a otro mundo?",answer:"portal",image:"URL_ALESS"},
-    jenni:{question:"¿Qué sigue a la luz?",answer:"sombra",image:"URL_JENNI"},
-    patri:{question:"¿Dónde comienza todo?",answer:"origen",image:"URL_PATRI"},
-    david:{question:"¿Qué no se puede evitar?",answer:"destino",image:"URL_DAVID"},
-    alba:{question:"¿Qué ilumina el camino?",answer:"luz",image:"URL_ALBA"},
-    ivan:{question:"¿Qué estás a punto de empezar?",answer:"viaje",image:"URL_IVAN"},
-    maite:{question:"¿Qué cruzas para entrar?",answer:"umbral",image:"URL_MAITE"}
+    aless:{question:"¿Cómo se accede a otro mundo?",answer:"portal",image:"img/invitacion_Aless.png"},
+    jenni:{question:"¿Qué sigue a la luz?",answer:"sombra",image:"img/invitacion_Jenni.png"},
+    patri:{question:"¿Dónde comienza todo?",answer:"origen",image:"img/invitacion_Patri.png"},
+    david:{question:"¿Qué no se puede evitar?",answer:"destino",image:"img/invitacion_David.png"},
+    alba:{question:"¿Qué ilumina el camino?",answer:"luz",image:"img/invitacion_Alba.png"},
+    ivan:{question:"¿Qué estás a punto de empezar?",answer:"viaje",image:"img/invitacion_Ivan.png"},
+    maite:{question:"¿Qué cruzas para entrar?",answer:"umbral",image:"img/invitacion_Maite.png"}
 };
 
 function playSound(){
@@ -432,13 +447,16 @@ function checkFinal(){
         vibrate([100, 50, 100]);
         
         const msg = document.getElementById("finalError");
-        msg.innerText = "ACCESO DESBLOQUEADO";
         msg.classList.remove("error");
         msg.classList.add("success-text");
         
         setTimeout(()=>{
-            window.open("https://chat.whatsapp.com/KDkzlur81e42CfIVYYgSuE", "_blank");
-        }, 3000);
+            document.getElementById("final").classList.add("hidden");
+            document.getElementById("finalScreen").classList.remove("hidden");
+            setTimeout(()=>{
+                window.location.href = "https://chat.whatsapp.com/KDkzlur81e42CfIVYYgSuE";
+            }, 3000);
+        }, 1200);
 
     } else {
         attempts--;
