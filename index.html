@@ -14,7 +14,8 @@ body {
     font-family: 'Inter', sans-serif;
     background: radial-gradient(circle at center, #0f172a, #020617);
     color: #e5e7eb;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* CONTENEDOR APP */
@@ -22,7 +23,7 @@ body {
     position: relative;
     z-index: 1;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
 
     display: flex;
     flex-direction: column;
@@ -138,6 +139,14 @@ img {
     animation: floatLogo 3s ease-in-out infinite, glowLogo 4s ease-in-out infinite;
 }
 
+/* BOTON FINAL */
+.secret-btn {
+    margin-top: 10px;
+    background: transparent;
+    border: 2px dashed rgba(255,215,0,0.3);
+    font-size: 20px;
+}
+
 @keyframes floatLogo {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-6px); }
@@ -191,6 +200,7 @@ img {
     <button onclick="selectUser('david')">DAVID</button>
     <button onclick="selectUser('alba')">ALBA</button>
     <button onclick="selectUser('ivan')">IVAN</button>
+    <button class="secret-btn" onclick="openFinal()">?</button>
 </div>
 
 <div id="quiz" class="card hidden">
@@ -211,6 +221,19 @@ img {
     <button onclick="goHome()">VOLVER</button>
 </div>
 
+<div id="final" class="card hidden">
+    <h1>CLAVE FINAL</h1>
+    <p class="subtitle">Solo una letra y solo un orden forma una última clave</p>
+
+    <input type="text" id="finalInput" placeholder="Introduce la clave">
+
+    <button onclick="checkFinal()">VALIDAR</button>
+    <button onclick="goHome()">VOLVER</button>
+
+    <p id="finalError" class="error"></p>
+    <p id="attemptsLeft"></p>
+</div>
+
 </div>
 
 <!-- SONIDOS -->
@@ -219,6 +242,20 @@ img {
 <audio id="ambient" src="audio/Intro.mp3" loop></audio>
 
 <script>
+
+//Inicializacion del bloqueo
+if(localStorage.getItem("attempts") === null){
+    localStorage.setItem("attempts", 10);
+}
+    
+//Bloqueo de la APP
+if(parseInt(localStorage.getItem("attempts")) <= 0){
+    lockApp();
+}
+
+document.getElementById("finalInput").addEventListener("input", () => {
+    document.getElementById("finalError").innerText = "";
+});
     
 let audioCtx = null;
 
@@ -245,7 +282,7 @@ function initExperience(){
         let vol = 0;
         const fade = setInterval(()=>{
             if(vol < 0.5){
-                vol += 0.1;
+                vol += 0.05;
                 ambient.volume = vol;
             } else {
                 clearInterval(fade);
@@ -308,6 +345,7 @@ function checkAnswer(){
 
     if(input === data[currentUser].answer){
         playSuccess();
+        navigator.vibrate([100, 50, 100]);
 
         // 🛑 parar música de fondo
         const ambient = document.getElementById("ambient");
@@ -319,6 +357,7 @@ function checkAnswer(){
         document.getElementById("userImage").src = data[currentUser].image;
     } else {
         document.getElementById("error").innerText = "Clave incorrecta";
+        navigator.vibrate(200);
     }
 }
 
@@ -328,6 +367,77 @@ function goHome(){
     document.getElementById("result").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
     document.getElementById("answer").value="";
+}
+
+let attempts = parseInt(localStorage.getItem("attempts")) || 10;
+const FINAL_KEY = "SLMXXXX"; // Clave final real
+
+function openFinal(){
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+    updateAttempts();
+}
+
+function updateAttempts(){
+    document.getElementById("attemptsLeft").innerText =
+        "Intentos restantes: " + attempts;
+}
+
+//Mostrar intentos
+updateAttempts();
+
+function checkFinal(){
+
+    if(attempts <= 0){
+        lockApp();
+        return;
+    }
+
+    const input = document.getElementById("finalInput").value.toUpperCase();
+    
+    if(input === FINAL_KEY){
+
+        // sonido final (puedes añadir otro audio)
+        playSuccess();
+        navigator.vibrate([100, 50, 100]);
+        
+        document.getElementById("finalError").innerText = "¡¡¡CORRECTO, ACCEDIENDO!!!";
+        
+        setTimeout(()=>{
+            window.location.href = "https://chat.whatsapp.com/XXXX";
+        }, 1500);
+
+    } else {
+        attempts--;
+        localStorage.setItem("attempts", attempts);
+
+        document.getElementById("finalError").innerText = "Incorrecto";
+        navigator.vibrate(200);
+        updateAttempts();
+
+        if(attempts <= 0){
+            lockApp();
+        }
+    }
+}
+
+function lockApp(){
+    document.body.innerHTML = `
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:#020617;
+            color:white;
+            text-align:center;
+        ">
+            <div>
+                <h1>ACCESO BLOQUEADO</h1>
+                <p>Has agotado los intentos, no te mereces acceder al evento</p>
+            </div>
+        </div>
+    `;
 }
 
 /* PARTICULAS */
