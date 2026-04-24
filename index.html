@@ -411,14 +411,14 @@ let currentUser = "";
 let audioStarted = false;
 
 const data = {
-    javi:{question:"¿Donde estaban las escaleras que no llegaban a ninguna parte?",answer:"lanzarote",image:"img/invitacion_Javi.png"},
-    aless:{question:"Ni era un lugar, ni un animal",answer:"berraco",image:"img/invitacion_Aless.png"},
-    jenni:{question:"Nunca tuve una, siempre está cerca, dime su nombre",answer:"jenni",image:"img/invitacion_Jenni.png"},
-    patri:{question:"La vimos amanecer, pero no era su hora, aunque siempre recordaremos ese momento",answer:"luna",image:"img/invitacion_Patri.png"},
-    david:{question:"¿Qué genera tensión pero ambos sabemos que es inofensivo?",answer:"picachichis",image:"img/invitacion_David.png"},
-    alba:{question:"¿Donde estaba en el video más ilusionante y potente de la última decada?",answer:"sofa",image:"img/invitacion_Alba.png"},
-    ivan:{question:"Caminamos, peleamos, vivimos intensamente, pero a veces...",answer:"sin mas",image:"img/invitacion_Ivan.png"},
-    maite:{question:"¿Cuál es el lugar donde somos felices?",answer:"love the twenties",image:"img/invitacion_Maite.png"}
+    javi:{question:"¿Donde estaban las escaleras que no llegaban a ninguna parte?",answer:"bGFuemFyb3Rl",image:"img/invitacion_Javi.png"},
+    aless:{question:"Ni era un lugar, ni un animal",answer:"YmVycmFjbw==",image:"img/invitacion_Aless.png"},
+    jenni:{question:"Nunca tuve una, siempre está cerca, dime su nombre",answer:"amVubmk=",image:"img/invitacion_Jenni.png"},
+    patri:{question:"La vimos amanecer, pero no era su hora, aunque siempre recordaremos ese momento",answer:"bHVuYQ==",image:"img/invitacion_Patri.png"},
+    david:{question:"¿Qué genera tensión pero ambos sabemos que es inofensivo?",answer:"cGljYWNoaWNoaXM=",image:"img/invitacion_David.png"},
+    alba:{question:"¿Donde estaba en el video más ilusionante y potente de la última decada?",answer:"c29mYQ==",image:"img/invitacion_Alba.png"},
+    ivan:{question:"Caminamos, peleamos, vivimos intensamente, pero a veces...",answer:"c2luIG1hcw==",image:"img/invitacion_Ivan.png"},
+    maite:{question:"¿Cuál es el lugar donde somos felices?",answer:"bG92ZSB0aGUgdHdlbnRpZXM=",image:"img/invitacion_Maite.png"}
 };
 
 function flashError(){
@@ -479,7 +479,7 @@ function checkAnswer(){
     playSound();
     let input = document.getElementById("answer").value.toLowerCase();
 
-    if(input === data[currentUser].answer){
+    if(input === atob(data[currentUser].answer))
         playSuccess();
         vibrate([100, 50, 100]);
 
