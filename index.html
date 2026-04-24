@@ -223,6 +223,7 @@ img {
     <button onclick="selectUser('alba')">ALBA</button>
     <button onclick="selectUser('ivan')">IVAN</button>
     <button class="secret-btn" onclick="openFinal()">?</button>
+    <button onclick="testVibration()">TEST VIBRACION</button>
 </div>
 
 <div id="quiz" class="card hidden">
@@ -257,7 +258,7 @@ img {
 </div>
 
 <div id="finalScreen" class="card hidden">
-    <h1>¡¡¡¡¡¡¡¡¡¡¡¡ACCESO DESBLOQUEADO!!!!!!!!!!!!</h1>
+    <h1>ACCESO DESBLOQUEADO</h1>
     <p class="subtitle">¡Familia, vamos a divertirnos!</p>
 </div>
 
@@ -271,6 +272,10 @@ img {
 <audio id="finalSound" src="audio/Final.mp3"></audio>
     
 <script>
+function testVibration(){
+    alert("Soporte: " + ("vibrate" in navigator));
+    navigator.vibrate([300,100,300]);
+}
 
 //Inicializacion del bloqueo
 if(localStorage.getItem("attempts") === null){
