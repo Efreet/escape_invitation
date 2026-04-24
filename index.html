@@ -65,6 +65,13 @@ canvas {
     background: rgba(255,255,255,0.03);
 }
 
+/* FINAL */
+.card.success {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255,215,0,0.5);
+    transition: all 0.4s ease;
+}
+
 /* TEXTOS */
 h1 {
     font-family: 'Cinzel', serif;
@@ -129,6 +136,11 @@ img {
 .error { color: #ef4444; }
 .success { color: #22c55e; }
 
+.success-text {
+    color: #22c55e;
+    text-shadow: 0 0 10px rgba(34,197,94,0.6);
+}
+    
 /* LOGO */
 .logo {
     width: 12vh;
@@ -364,7 +376,7 @@ function checkAnswer(){
 
     if(input === data[currentUser].answer){
         playSuccess();
-        navigator.vibrate([100, 50, 100]);
+        vibrate([100, 50, 100]);
 
         // 🛑 parar música de fondo
         const ambient = document.getElementById("ambient");
@@ -376,7 +388,7 @@ function checkAnswer(){
         document.getElementById("userImage").src = data[currentUser].image;
     } else {
         document.getElementById("error").innerText = "Clave incorrecta";
-        navigator.vibrate(200);
+        vibrate(200);
     }
 }
 
@@ -417,25 +429,34 @@ function checkFinal(){
     
     if(input === FINAL_KEY){
         playFinal()
-        navigator.vibrate([100, 50, 100]);
+        vibrate([100, 50, 100]);
         
-        document.getElementById("finalError").innerText = "¡¡¡CORRECTO, ACCEDIENDO!!!";
+        const msg = document.getElementById("finalError");
+        msg.innerText = "ACCESO DESBLOQUEADO";
+        msg.classList.remove("error");
+        msg.classList.add("success-text");
         
         setTimeout(()=>{
-            window.location.href = "https://chat.whatsapp.com/KDkzlur81e42CfIVYYgSuE";
-        }, 1500);
+            window.open("https://chat.whatsapp.com/KDkzlur81e42CfIVYYgSuE", "_blank");
+        }, 3000);
 
     } else {
         attempts--;
         localStorage.setItem("attempts", attempts);
 
         document.getElementById("finalError").innerText = "Incorrecto";
-        navigator.vibrate(200);
+        vibrate(200);
         updateAttempts();
 
         if(attempts <= 0){
             lockApp();
         }
+    }
+}
+
+function vibrate(pattern){
+    if ("vibrate" in navigator) {
+        navigator.vibrate(pattern);
     }
 }
 
