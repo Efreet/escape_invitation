@@ -479,7 +479,7 @@ function checkAnswer(){
     playSound();
     let input = document.getElementById("answer").value.toLowerCase();
 
-    if(input === atob(data[currentUser].answer))
+    if(input === atob(data[currentUser].answer)){
         playSuccess();
         vibrate([100, 50, 100]);
 
