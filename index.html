@@ -282,8 +282,14 @@ if(parseInt(localStorage.getItem("attempts")) <= 0){
     lockApp();
 }
 
-document.getElementById("finalInput").addEventListener("input", () => {
-    document.getElementById("finalError").innerText = "";
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("finalInput");
+
+    if (input) {
+        input.addEventListener("input", () => {
+            document.getElementById("finalError").innerText = "";
+        });
+    }
 });
     
 let audioCtx = null;
