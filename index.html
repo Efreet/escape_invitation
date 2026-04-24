@@ -215,7 +215,148 @@ img {
 <audio id="ambient" src="audio/Intro.mp3" loop></audio>
 
 <script>
-/* TODO tu JS intacto (no lo he tocado) */
+    
+let audioCtx = null;
+
+function unlockAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+}
+    
+function initExperience(){
+
+    // 🔑 desbloqueo REAL del audio
+    unlockAudio();
+
+    const ambient = document.getElementById("ambient");
+
+    ambient.volume = 0.1;
+    ambient.play().then(() => {
+
+        let vol = 0;
+        const fade = setInterval(()=>{
+            if(vol < 0.7){
+                vol += 0.1;
+                ambient.volume = vol;
+            } else {
+                clearInterval(fade);
+            }
+        },200);
+
+    }).catch(e => {
+        console.log("Audio bloqueado:", e);
+    });
+
+    document.getElementById("startScreen").style.display = "none";
+}
+    
+let currentUser = "";
+let audioStarted = false;
+
+const data = {
+    javi:{question:"¿Qué abre todas las puertas?",answer:"llave",image:"img/invitacion_Javi.png"},
+    aless:{question:"¿Cómo se accede a otro mundo?",answer:"portal",image:"URL_ALESS"},
+    jenni:{question:"¿Qué sigue a la luz?",answer:"sombra",image:"URL_JENNI"},
+    patri:{question:"¿Dónde comienza todo?",answer:"origen",image:"URL_PATRI"},
+    david:{question:"¿Qué no se puede evitar?",answer:"destino",image:"URL_DAVID"},
+    alba:{question:"¿Qué ilumina el camino?",answer:"luz",image:"URL_ALBA"},
+    ivan:{question:"¿Qué estás a punto de empezar?",answer:"viaje",image:"URL_IVAN"},
+    maite:{question:"¿Qué cruzas para entrar?",answer:"umbral",image:"URL_MAITE"}
+};
+
+function playSound(){
+    unlockAudio();
+
+    const s = document.getElementById("clickSound");
+    s.pause();
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+}
+
+function playSuccess(){
+    unlockAudio();
+
+    const s = document.getElementById("successSound");
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+}
+
+function selectUser(user){
+    playSound();
+    currentUser = user;
+
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+
+    document.getElementById("titleUser").innerText = user.toUpperCase();
+    document.getElementById("question").innerText = data[user].question;
+    document.getElementById("error").innerText = "";
+}
+
+function checkAnswer(){
+    playSound();
+    let input = document.getElementById("answer").value.toLowerCase();
+
+    if(input === data[currentUser].answer){
+        playSuccess();
+
+        // 🛑 parar música de fondo
+        const ambient = document.getElementById("ambient");
+        ambient.pause();
+        ambient.currentTime = 0;
+        
+        document.getElementById("quiz").classList.add("hidden");
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("userImage").src = data[currentUser].image;
+    } else {
+        document.getElementById("error").innerText = "Clave incorrecta";
+    }
+}
+
+function goHome(){
+    playSound();
+    document.getElementById("quiz").classList.add("hidden");
+    document.getElementById("result").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("answer").value="";
+}
+
+/* PARTICULAS */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<60;i++){
+    particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        r:Math.random()*2,
+        d:Math.random()*0.5
+    });
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="rgba(255,215,0,0.6)";
+    particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+        p.y += p.d;
+        if(p.y>canvas.height) p.y=0;
+    });
+    requestAnimationFrame(draw);
+}
+draw();
+    
 </script>
 
 </body>
