@@ -308,7 +308,7 @@ img {
 
 <div id="final" class="card hidden">
     <h1>🔑 CLAVE FINAL 🔑</h1>
-    <p class="subtitle">Solo una letra y solo un orden forma una última clave</p>
+    <p class="subtitle">Son 8, están relacionadas y solo tiene un orden. Forma 1 última palabra clave. Juega en equipo.</p>
 
     <input type="text" id="finalInput" placeholder="Introduce la clave">
 
@@ -347,10 +347,10 @@ img {
 
 //Inicializacion del bloqueo
 if(localStorage.getItem("attempts") === null){
-    localStorage.setItem("attempts", 10);
+    localStorage.setItem("attempts", 3);
 }
 
-let attempts = parseInt(localStorage.getItem("attempts")) || 10;
+let attempts = parseInt(localStorage.getItem("attempts")) || 3;
 let isBlocked = attempts <= 0;
 let audioCtx = null;
 const FINAL_KEY = "GUERRERO"; // Clave final real
@@ -411,14 +411,14 @@ let currentUser = "";
 let audioStarted = false;
 
 const data = {
-    javi:{question:"¿Donde estaban las escaleras que no llegaban a ninguna parte?",answer:"Lanzarote",image:"img/invitacion_Javi.png"},
-    aless:{question:"Ni era un lugar, ni un animal",answer:"Berraco",image:"img/invitacion_Aless.png"},
-    jenni:{question:"Nunca tuve una, siempre está cerca, dime su nombre",answer:"Jenni",image:"img/invitacion_Jenni.png"},
+    javi:{question:"¿Donde estaban las escaleras que no llegaban a ninguna parte?",answer:"lanzarote",image:"img/invitacion_Javi.png"},
+    aless:{question:"Ni era un lugar, ni un animal",answer:"berraco",image:"img/invitacion_Aless.png"},
+    jenni:{question:"Nunca tuve una, siempre está cerca, dime su nombre",answer:"jenni",image:"img/invitacion_Jenni.png"},
     patri:{question:"La vimos amanecer, pero no era su hora, aunque siempre recordaremos ese momento",answer:"luna",image:"img/invitacion_Patri.png"},
     david:{question:"¿Qué genera tensión pero ambos sabemos que es inofensivo?",answer:"picachichis",image:"img/invitacion_David.png"},
     alba:{question:"¿Donde estaba en el video más ilusionante y potente de la última decada?",answer:"sofa",image:"img/invitacion_Alba.png"},
     ivan:{question:"Caminamos, peleamos, vivimos intensamente, pero a veces...",answer:"sin mas",image:"img/invitacion_Ivan.png"},
-    maite:{question:"¿Cuál es el lugar donde somos felices?",answer:"Love The Twenties",image:"img/invitacion_Maite.png"}
+    maite:{question:"¿Cuál es el lugar donde somos felices?",answer:"love the twenties",image:"img/invitacion_Maite.png"}
 };
 
 function flashError(){
