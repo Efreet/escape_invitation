@@ -223,7 +223,6 @@ img {
     <button onclick="selectUser('alba')">ALBA</button>
     <button onclick="selectUser('ivan')">IVAN</button>
     <button class="secret-btn" onclick="openFinal()">?</button>
-    <button onclick="testVibration()">TEST VIBRACION</button>
 </div>
 
 <div id="quiz" class="card hidden">
@@ -272,10 +271,6 @@ img {
 <audio id="finalSound" src="audio/Final.mp3"></audio>
     
 <script>
-function testVibration(){
-    alert("Soporte: " + ("vibrate" in navigator));
-    navigator.vibrate([300,100,300]);
-}
 
 //Inicializacion del bloqueo
 if(localStorage.getItem("attempts") === null){
@@ -484,7 +479,13 @@ function vibrate(pattern){
 }
 
 function lockApp(){
-    playBloqueo();
+    unlockAudio();
+
+    const audio = document.getElementById("bloqueo");
+    audio.currentTime = 0;
+    audio.play().catch(()=>{});
+
+    // 💥 mostramos pantalla al instante
     document.body.innerHTML = `
         <div style="
             display:flex;
@@ -496,7 +497,7 @@ function lockApp(){
             text-align:center;
         ">
             <div>
-                <h1>ACCESO BLOQUEADO</h1>
+                <h1>💥 ACCESO BLOQUEADO 💥</h1>
                 <p>Has agotado los intentos, no te mereces acceder al evento</p>
             </div>
         </div>
