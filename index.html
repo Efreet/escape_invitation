@@ -191,6 +191,13 @@ img {
 /* PANTALLA FINAL */
 #finalScreen {
     text-align: center;
+    animation: finalGlow 1.2s ease;
+}
+
+@keyframes finalGlow {
+    0% { transform: scale(0.9); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
 }
     
 #finalScreen h1 {
@@ -268,7 +275,7 @@ img {
 <div id="home" class="card">
     <img src="https://i.imgur.com/Z2tU22q.png" class="logo">
     <h1>BIENVENIDOS</h1>
-    <p class="subtitle">Selecciona tu nombre.</p>
+    <p class="subtitle">Solo los elegidos pueden continuar.</p>
 
     <button onclick="selectUser('javi')">JAVI</button>
     <button onclick="selectUser('maite')">MAITE</button>
