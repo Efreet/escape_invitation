@@ -195,6 +195,34 @@ img {
     color: #22c55e;
     text-shadow: 0 0 20px rgba(34,197,94,0.7);
 }
+
+/* PANTALLA BLOQUEO */
+#blockedOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(2,6,23,0.95);
+    backdrop-filter: blur(4px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+#blockedOverlay.hidden {
+    display: none;
+}
+
+.blockedContent {
+    text-align: center;
+    color: white;
+}
+    
 </style>
 </head>
 
@@ -244,7 +272,7 @@ img {
 </div>
 
 <div id="final" class="card hidden">
-    <h1>CLAVE FINAL</h1>
+    <h1>🔑 CLAVE FINAL 🔑</h1>
     <p class="subtitle">Solo una letra y solo un orden forma una última clave</p>
 
     <input type="text" id="finalInput" placeholder="Introduce la clave">
@@ -259,6 +287,13 @@ img {
 <div id="finalScreen" class="card hidden">
     <h1>ACCESO DESBLOQUEADO</h1>
     <p class="subtitle">¡Familia, vamos a divertirnos!</p>
+</div>
+
+<div id="blockedOverlay" class="hidden">
+    <div class="blockedContent">
+        <h1>💥 ACCESO BLOQUEADO 💥</h1>
+        <p>Has agotado los intentos, no te mereces acceder al evento</p>
+    </div>
 </div>
 
 </div>
@@ -276,12 +311,12 @@ img {
 if(localStorage.getItem("attempts") === null){
     localStorage.setItem("attempts", 10);
 }
-    
-//Bloqueo de la APP
-if(parseInt(localStorage.getItem("attempts")) <= 0){
-    lockApp();
-}
 
+let attempts = parseInt(localStorage.getItem("attempts")) || 10;
+let isBlocked = attempts <= 0;
+let audioCtx = null;
+const FINAL_KEY = "GUERRERO"; // Clave final real
+       
 document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("finalInput");
 
@@ -292,8 +327,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
     
-let audioCtx = null;
-
 function unlockAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -308,6 +341,11 @@ function initExperience(){
 
     // 🔑 desbloqueo REAL del audio
     unlockAudio();
+
+    if(isBlocked){
+        lockApp();
+        return;
+    }
 
     const ambient = document.getElementById("ambient");
 
@@ -421,9 +459,6 @@ function goHome(){
     document.getElementById("answer").value="";
 }
 
-let attempts = parseInt(localStorage.getItem("attempts")) || 10;
-const FINAL_KEY = "GUERRERO"; // Clave final real
-
 function openFinal(){
     playSound();
     document.getElementById("home").classList.add("hidden");
@@ -485,29 +520,16 @@ function vibrate(pattern){
 }
 
 function lockApp(){
+    isBlocked = true;
+
     unlockAudio();
 
     const audio = document.getElementById("bloqueo");
+    audio.loop = true; 
     audio.currentTime = 0;
     audio.play().catch(()=>{});
 
-    // 💥 mostramos pantalla al instante
-    document.body.innerHTML = `
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            background:#020617;
-            color:white;
-            text-align:center;
-        ">
-            <div>
-                <h1>💥 ACCESO BLOQUEADO 💥</h1>
-                <p>Has agotado los intentos, no te mereces acceder al evento</p>
-            </div>
-        </div>
-    `;
+    document.getElementById("blockedOverlay").classList.remove("hidden");
 }
 
 /* PARTICULAS */
