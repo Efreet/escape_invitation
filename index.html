@@ -240,7 +240,9 @@ img {
 <audio id="clickSound" src="audio/Click.mp3"></audio>
 <audio id="successSound" src="audio/Success.mp3"></audio>
 <audio id="ambient" src="audio/Intro.mp3" loop></audio>
-
+<audio id="bloqueo" src="audio/Bloqueo.mp3"></audio>
+<audio id="final" src="audio/Final.mp3"></audio>
+    
 <script>
 
 //Inicializacion del bloqueo
@@ -327,6 +329,22 @@ function playSuccess(){
     s.play().catch(()=>{});
 }
 
+function playBloqueo(){
+    unlockAudio();
+
+    const s = document.getElementById("bloqueo");
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+}
+
+function playFinal(){
+    unlockAudio();
+
+    const s = document.getElementById("final");
+    s.currentTime = 0;
+    s.play().catch(()=>{});
+}
+    
 function selectUser(user){
     playSound();
     currentUser = user;
@@ -370,9 +388,10 @@ function goHome(){
 }
 
 let attempts = parseInt(localStorage.getItem("attempts")) || 10;
-const FINAL_KEY = "SLMXXXX"; // Clave final real
+const FINAL_KEY = "GUERRERO"; // Clave final real
 
 function openFinal(){
+    playSound();
     document.getElementById("home").classList.add("hidden");
     document.getElementById("final").classList.remove("hidden");
     updateAttempts();
@@ -396,15 +415,13 @@ function checkFinal(){
     const input = document.getElementById("finalInput").value.toUpperCase();
     
     if(input === FINAL_KEY){
-
-        // sonido final (puedes añadir otro audio)
-        playSuccess();
+        playFinal()
         navigator.vibrate([100, 50, 100]);
         
         document.getElementById("finalError").innerText = "¡¡¡CORRECTO, ACCEDIENDO!!!";
         
         setTimeout(()=>{
-            window.location.href = "https://chat.whatsapp.com/XXXX";
+            window.location.href = " https://chat.whatsapp.com/KDkzlur81e42CfIVYYgSuE";
         }, 1500);
 
     } else {
@@ -422,6 +439,7 @@ function checkFinal(){
 }
 
 function lockApp(){
+    playBloqueo();
     document.body.innerHTML = `
         <div style="
             display:flex;
