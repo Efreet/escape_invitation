@@ -353,7 +353,7 @@ if(localStorage.getItem("attempts") === null){
 let attempts = parseInt(localStorage.getItem("attempts")) || 3;
 let isBlocked = attempts <= 0;
 let audioCtx = null;
-const FINAL_KEY = "GUERRERO"; // Clave final real
+const FINAL_KEY = "R1VFUlJFUk8="; // Clave final real
        
 document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("finalInput");
@@ -532,7 +532,7 @@ function checkFinal(){
 
     const input = document.getElementById("finalInput").value.toUpperCase();
     
-    if(input === FINAL_KEY){
+    if(input === atob(FINAL_KEY)){
         playFinal()
         vibrate([100, 50, 100]);
         
